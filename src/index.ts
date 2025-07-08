@@ -15,18 +15,18 @@ class ExampleMentraOSApp extends AppServer {
     });
   }
 
+
+
   protected async onSession(session: AppSession, sessionId: string, userId: string): Promise<void> {
     // Show welcome message
     session.layouts.showTextWall("Example App is ready!");
 
     // Handle real-time transcription
     // requires microphone permission to be set in the developer console
-    session.events.onTranscription((data) => {
-      if (data.isFinal) {
-        session.layouts.showTextWall("You said: " + data.text, {
-          view: ViewType.MAIN,
-          durationMs: 3000
-        });
+    session.events.onTranscription(async (data) => {
+      if (data.isFinal && !(data.text.toLowerCase().includes("cool") || data.text.toLowerCase().includes("you said"))) {
+        await session.audio.speak("You said: " + data.text)
+        await session.audio.playAudio({ audioUrl: "https://okgodoit.com/cool.mp3" })
       }
     })
 
