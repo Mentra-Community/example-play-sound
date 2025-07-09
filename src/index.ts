@@ -19,29 +19,24 @@ class ExampleMentraOSApp extends AppServer {
 
   protected async onSession(session: AppSession, sessionId: string, userId: string): Promise<void> {
     // Show welcome message
-    session.layouts.showTextWall("Example App is ready!");
-    await session.audio.playAudio({ audioUrl: "https://okgodoit.com/cool.mp3" })
-    session.layouts.showTextWall("Audio played")
+    session.layouts.showTextWall("Ready to listen.  Say something and I'll repeat it back to you.");
+
 
     // Handle real-time transcription
     // requires microphone permission to be set in the developer console
     session.events.onTranscription(async (data) => {
       if (data.text.toLowerCase().includes("stop")) {
         await session.audio.stopAudio();
-        console.log("Stopping audio");
+        this.logger.info("Stopping audio");
       } else if (data.isFinal && !(data.text.toLowerCase().includes("cool") || data.text.toLowerCase().includes("you said")) || data.text.toLowerCase().includes("stop")) {
         const response = await session.audio.speak("You said: " + data.text)
-        console.log("Response:", response);
+        this.logger.info("Response:" + response);
         if (response.success) {
           await session.audio.playAudio({ audioUrl: "https://okgodoit.com/cool.mp3" })
         } else if (response.error) {
-          console.log("Error playing audio:", response.error);
+          this.logger.error("Error playing audio: " + response.error);
         }
       }
-    })
-
-    session.events.onGlassesBattery((data) => {
-      console.log('Glasses battery:', data);
     })
   }
 }
