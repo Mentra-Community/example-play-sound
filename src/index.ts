@@ -19,8 +19,13 @@ class ExampleMentraOSApp extends AppServer {
 
   protected async onSession(session: AppSession, sessionId: string, userId: string): Promise<void> {
     // Show welcome message
-    session.layouts.showTextWall("Ready to listen.  Say something and I'll repeat it back to you.");
+    await session.audio.speak("Testing one");
+    await session.audio.speak("Testing two");
+    await session.audio.speak("Testing three");
+    await session.audio.speak("Testing four");
+    await session.audio.speak("Testing five.  stop");
 
+    session.layouts.showTextWall("Ready to listen.  Say something and I'll repeat it back to you.");
 
     // Handle real-time transcription
     // requires microphone permission to be set in the developer console
